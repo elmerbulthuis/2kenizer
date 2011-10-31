@@ -1,0 +1,17 @@
+{
+    "name":	"2kenizer"
+    , "description":	"efficient tokenizer"
+    , "version":	"0.0.1"
+    , "author":	"Elmer Bulthuis <elmerbulthuis@gmail.com>"
+    , "repositories":	[{
+        "type": "git",
+        "url": "git@github.com:LuvDaSun/2kenizer.git"
+    }]
+    , "main": "index.js"
+    ,   "dependencies":	{
+	}
+    ,   "devDependencies":	{
+	}
+
+}
+
