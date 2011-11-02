@@ -11,11 +11,11 @@ function parse(data)	{
 	var tokenizer = new Tokenizer(function(token, buffer) {
 		if(!token) return;
 
-		for(var index = buffer.indexOf(newline); ~index && index < token.match.index; index = buffer.indexOf(newline, index + newline.length))	{
+		for(var index = buffer.indexOf(newline); ~index && index < token.index; index = buffer.indexOf(newline, index + newline.length))	{
 	line++;
 		}
 
-	//console.log(token.match[0], token.category);
+	//console.log(token[0], token.category);
 
 		if(token.category in tokenActions) tokenActions[token.category](token, buffer);
 		else throw "invalid category '" + token.category + "' in this context";
@@ -50,14 +50,14 @@ function parse(data)	{
 		, "tag":	function(token, buffer)	{
 			enterContext({
 				category:	token.category
-				, tag:	token.match[1]
+				, tag:	token[1]
 				, filter:	["tag1"]
 			});
 		}
 		, "tag1":	function(token, buffer)	{
 			var tag = currentContext.tag;
 			exitContext();
-			if(token.match[1] != "/" && !~voidTags.indexOf(tag.toLowerCase()))	{
+			if(token[1] != "/" && !~voidTags.indexOf(tag.toLowerCase()))	{
 				enterContext({
 					category:	token.category
 					, tag:	tag
@@ -68,7 +68,7 @@ function parse(data)	{
 		, "tag2":	function(token, buffer)	{
 			var tag = currentContext.tag;
 			
-			assert.equal(tag, token.match[1], "<" + tag + "> at line " + line + " should be closed before closing <" + token.match[1] + ">");
+			assert.equal(tag, token[1], "<" + tag + "> at line " + line + " should be closed before closing <" + token[1] + ">");
 			exitContext();
 		}
 
@@ -104,7 +104,7 @@ function testFile(filePath, options)	{
 		return;
 	}
 
-	//console.log('[' + match[3] + ']');
+	console.log('[' + match[3] + ']');
 	try	{
 		parse(fs.readFileSync(match[0], 'utf-8'));
 	}

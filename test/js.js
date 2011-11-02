@@ -6,7 +6,7 @@ function parse(data)	{
 	var tokenizer = new Tokenizer(function(token, buffer) {
 		if(!token) return;
 
-		//console.log(token.category, token.match[0]);
+		//console.log(token.category, token[0]);
 
 		if(token.category in tokenActions) tokenActions[token.category](token, buffer);
 		else throw "invalid category '" + token.category + "' in this context";
@@ -114,7 +114,7 @@ function testFile(filePath, options)	{
 		return;
 	}
 
-	//console.log('[' + match[3] + ']');
+	console.log('[' + match[3] + ']');
 	try	{
 		parse(fs.readFileSync(match[0], 'utf-8'));
 	}

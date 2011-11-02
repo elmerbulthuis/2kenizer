@@ -7,7 +7,7 @@ var tokenizer = new Tokenizer(function(token, buffer) {
 
 	switch(token.category)	{
 		case 'A':
-		if(token.match[0] == 'yz')	{
+		if(token[0] == 'yz')	{
 			tokenizer.filter('0');
 		}
 		break;

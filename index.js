@@ -61,7 +61,7 @@ module.exports = function(tokenCallback, expressionSet, options) {
 	/**
 	matches in the current buffer. Serves as a cache.
 	*/
-	var matchSet = {};
+	var tokenSet = {};
 
 	/**
 	What categories should we look for?
@@ -95,7 +95,7 @@ module.exports = function(tokenCallback, expressionSet, options) {
 		flush(0);
 	    tokenCallback.call(tokenizer, null, buffer);
 	    buffer = '';
-	    matchSet = {};
+	    tokenSet = {};
 	}
 	
 	/**
@@ -108,7 +108,7 @@ module.exports = function(tokenCallback, expressionSet, options) {
 			/*
 			the offset to which we are going to flush.
 			*/
-        	var offset = token.match.index + token.match[0].length;
+        	var offset = token.index + token[0].length;
 			
 			/*
 			trim the buffer.
@@ -118,20 +118,20 @@ module.exports = function(tokenCallback, expressionSet, options) {
 			/*
 			sync the cache with the buffer.
 			*/
-			for(var category in matchSet)	{
-	            var match = matchSet[category];
+			for(var category in tokenSet)	{
+	            var token = tokenSet[category];
 				/*
 				when the index of the cached match is before the
 				offset, it is trimmed off! so remove it from the
 				cache
 				*/
-	            if(match.index < offset) delete matchSet[category];
+	            if(token.index < offset) delete tokenSet[category];
 	            /*
 	            if the cached match is not before the offset, it is
 	            still in the buffer but if moved a litte to the
 	            beginning. So adjust the index.
 	            */
-	            else match.index -= offset;
+	            else token.index -= offset;
 			}
 			
 		}
@@ -141,17 +141,17 @@ module.exports = function(tokenCallback, expressionSet, options) {
 	finds the next token in the buffer.
 	*/
     function nextToken() {
-        var token = null;
+		var foundToken = null;
 		categoryList.forEach(function(category) {
             var expression = expressionSet[category];
 			/*
-			look for a cached match
+			look for a cached token
 			*/
-            var match = matchSet[category];
+           	var token = tokenSet[category];
 			/*
-			if there is no cached match
+			if there is no cached token
 			*/
-            if(!match)	{
+            if(!token)	{
             	/*
             	if expression is a string we are just going
             	to look for the string.
@@ -160,47 +160,47 @@ module.exports = function(tokenCallback, expressionSet, options) {
 	            	var index = buffer.indexOf(expression);
 	            	/*
 	            	if we found the string (remember, ~-1 == 0) then
-	            	mimic the match object returned by RegExp
+	            	create a token object
 	            	*/
 	            	if(~index)	{
-	            		match = extend([
+	            		token = extend([
 	            			expression
 	            		], {
 	            			index:	index
+	            			, category:	category
 	            		});
 		           	}
             	}
         		/*
-        		if it's not a string, it should be a RegExp. Just execute
-        		it.
+        		if it's not a string, it must be a RegExp. Execute it
+        		and make it a token
         		*/
             	else	{
-	            	match = expression.exec(buffer);
+	            	var match = expression.exec(buffer);
+	            	if(match)	{
+	            		token = extend(match, {
+	            			category:	category
+	            		});
+	            	}
             	}
             	/*
             	if there is a match, cache it!
             	*/
-            	if(match) matchSet[category] = match;
+            	if(token) tokenSet[category] = token;
             }
             
 			/*
 			if there is no token or, if there is a token and it is before
 			the current token.
 			*/
-            if (match && (!token || match.index < token.match.index)) {
-				/*
-				define a new token.
-				*/
-                token = {
-                    category: category
-                    , match: match
-                };
+            if (token && (!foundToken || token.index < foundToken.index)) {
+                foundToken = token;
             }
 		});
 		/*
 		if there is no token found, this will return null
 		*/
-        return token;
+        return foundToken;
     }
     
     /**
