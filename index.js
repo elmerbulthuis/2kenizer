@@ -152,48 +152,59 @@ module.exports = function(tokenCallback, expressionSet, options) {
 			if there is no cached token
 			*/
             if(!token)	{
-            	var type = typeof expression;
-            	switch(type)	{
-		        	/*
-		        	if expression is a string we try
-		        	to find for that string.
-		        	*/
-            		case 'string':
-	            	var index = buffer.indexOf(expression);
-	            	/*
-	            	if we found the string (remember, ~-1 == 0) then
-	            	create a token object
-	            	*/
-	            	if(~index)	{
-	            		token = extend([
-	            			expression
-	            		], {
-	            			index:	index
-	            			, category:	category
-	            		});
-		           	}
-		           	break;
+            	if(expression)	{
+	            	var type = typeof expression;
+	            	switch(type)	{
+			        	/*
+			        	if expression is a string we try
+			        	to find for that string.
+			        	*/
+	            		case 'string':
+		            	var index = buffer.indexOf(expression);
+		            	/*
+		            	if we found the string (remember, ~-1 == 0) then
+		            	create a token object
+		            	*/
+		            	if(~index)	{
+		            		token = extend([
+		            			expression
+		            		], {
+		            			index:	index
+		            			, category:	category
+		            		});
+			           	}
+			           	break;
 
-		    		/*
-		    		if it's a function, assume it to be a RegExp. Execute it
-		    		and make it a token
-		    		*/
-            		case 'function':
-	            	var match = expression.exec(buffer);
-	            	if(match)	{
-	            		token = extend(match, {
-	            			category:	category
-	            		});
+			    		/*
+			    		if it's a function, assume it to be a RegExp. Execute it
+			    		and make it a token
+			    		*/
+	            		case 'function':
+		            	var match = expression.exec(buffer);
+		            	if(match)	{
+		            		token = extend(match, {
+		            			category:	category
+		            		});
+		            	}
+		            	break;
+		            	
+		            	default:
+		            	throw "expression '" + category + "' is '" + type + "', expecting 'string' or a RegExp ('function').";
 	            	}
-	            	break;
-	            	
-	            	default:
-	            	throw "expression '" + category + "' is '" + type + "', expecting 'string' or a RegExp ('function').";
-            	}
-            	/*
-            	if there is a match, cache it!
-            	*/
-            	if(token) tokenSet[category] = token;
+	            	/*
+	            	if there is a match, cache it!
+	            	*/
+	            	if(token) tokenSet[category] = token;
+	            }
+	            else	{
+	            	/*
+	            	when there is no exrpression, there is always a match!
+	            	*/
+	            	token = extend([], {
+            			index:	0
+            			, category:	category
+            		});
+	            }
             }
             
 			/*
@@ -203,6 +214,8 @@ module.exports = function(tokenCallback, expressionSet, options) {
             if (token && (!foundToken || token.index < foundToken.index)) {
                 foundToken = token;
             }
+
+            if(foundToken && foundToken.index <= 0) return false;
 		});
 		/*
 		if there is no token found, this will return null
