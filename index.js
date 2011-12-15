@@ -166,9 +166,7 @@ module.exports = function(tokenCallback, expressionSet, options) {
 		            	create a token object
 		            	*/
 		            	if(~index)	{
-		            		token = extend([
-		            			expression
-		            		], {
+		            		token = extend([expression], {
 		            			index:	index
 		            			, category:	category
 		            		});
@@ -200,7 +198,7 @@ module.exports = function(tokenCallback, expressionSet, options) {
 	            	/*
 	            	when there is no exrpression, there is always a match!
 	            	*/
-	            	token = extend([], {
+	            	token = extend([""], {
             			index:	0
             			, category:	category
             		});
