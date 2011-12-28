@@ -153,13 +153,22 @@ module.exports = function(tokenCallback, expressionSet, options) {
 			*/
             if(!token)	{
             	if(expression)	{
-	            	var type = typeof expression;
-	            	switch(type)	{
-			        	/*
-			        	if expression is a string we try
-			        	to find for that string.
-			        	*/
-	            		case 'string':
+                	if(expression.exec){
+		        		/*
+	            		when there is an exec method on the expression, assume it is
+	            		a regular expression and execute it!
+	            		*/
+		            	var match = expression.exec(buffer);
+		            	if(match)	{
+		            		token = extend(match, {
+		            			category:	category
+		            		});
+		            	}
+	            	}
+	            	else{
+		            	/*
+		            	maybe it's a string!
+		            	*/
 		            	var index = buffer.indexOf(expression);
 		            	/*
 		            	if we found the string (remember, ~-1 == 0) then
@@ -171,23 +180,6 @@ module.exports = function(tokenCallback, expressionSet, options) {
 		            			, category:	category
 		            		});
 			           	}
-			           	break;
-
-			    		/*
-			    		if it's a function, assume it to be a RegExp. Execute it
-			    		and make it a token
-			    		*/
-	            		case 'function':
-		            	var match = expression.exec(buffer);
-		            	if(match)	{
-		            		token = extend(match, {
-		            			category:	category
-		            		});
-		            	}
-		            	break;
-		            	
-		            	default:
-		            	throw "expression '" + category + "' is '" + type + "', expecting 'string' or a RegExp ('function').";
 	            	}
 	            	/*
 	            	if there is a match, cache it!
