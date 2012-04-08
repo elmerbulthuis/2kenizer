@@ -8,7 +8,7 @@ var tokenizer = new Tokenizer(function(token, buffer) {
 	switch(token.category)	{
 		case 'A':
 		if(token[0] == 'yz')	{
-			tokenizer.filter('0');
+			tokenizer.filter(['0']);
 		}
 		break;
 		
