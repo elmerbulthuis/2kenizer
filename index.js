@@ -42,7 +42,11 @@ module.exports = (function(target){
 	target.prototype.end = function(){
 		this.write.apply(this, arguments);
 		this.flush(0);
-	    this.tokenCallback.call(this, null, this.buffer);
+		var endToken = extend([""], {
+			category: null
+			, index: this.buffer.length
+		});
+	    this.tokenCallback.call(this, endToken, this.buffer);
 	    this.buffer = '';
 	    this.tokenSet = {};
 	};//end
@@ -88,18 +92,6 @@ module.exports = (function(target){
     };//flush
 	
 
-
-	target.prototype.filter = function(categories){
-		this.categories = categories || [];
-		/*
-		when there are no arguments, match any category there is.
-		*/
-    	if(this.categories.length == 0)	{
-			for(var category in this.expressionSet)	{
-				this.categories.push(category);
-			}
-    	}
-	};//filter
 
 
 	/**
