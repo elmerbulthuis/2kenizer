@@ -3,10 +3,10 @@
     , "description":	"efficient tokenizer"
     , "version":	"0.1.1"
     , "author":	"Elmer Bulthuis <elmerbulthuis@gmail.com>"
-    , "repositories":	[{
-        "type": "git",
-        "url": "git@github.com:elmerbulthuis/2kenizer.git"
-    }]
+    , "repositories":	[
+        {"type": "git", "url": "git@github.com:elmerbulthuis/2kenizer.git"}
+        , {"type": "git", "url": "git@bitbucket.org:elmerbulthuis/2kenizer.git"}
+    ]
     , "main": "index.js"
     ,   "dependencies":	{
 	}
