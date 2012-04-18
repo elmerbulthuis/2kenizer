@@ -42,6 +42,7 @@ module.exports = (function(target){
 	target.prototype.end = function(){
 		this.write.apply(this, arguments);
 		this.flush(0);
+		this.atEnd = true;
 		var endToken = extend([""], {
 			category: null
 			, index: this.buffer.length
@@ -178,6 +179,7 @@ module.exports = (function(target){
 	this.expressionSet = expressionSet;
 	this.options = extend({bufferSize: 1024, bufferLimit: 4096}, options);
 
+	this.atEnd = false;
     this.buffer = '';
 
 	/**
