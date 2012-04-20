@@ -59,7 +59,10 @@ module.exports = (function(target){
     target.prototype.flush = function(bufferSize) {
 		var token;
         while(this.buffer.length > bufferSize && (token = this.nextToken())) {
-        	this.tokenCallback.call(this, token, this.buffer.substring(0, token.index));
+        	if(this.tokenCallback.call(this, token, this.buffer.substring(0, token.index)) === false){
+        		this.flush(bufferSize);
+        		return;
+        	}
 			/*
 			the offset to which we are going to flush.
 			*/
