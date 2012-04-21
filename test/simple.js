@@ -3,7 +3,7 @@ var Tokenizer = require('2kenizer');
 
 var tokens = '';
 var tokenizer = new Tokenizer(function(token, buffer) {
-	if(!token) return;
+	if(!token.category) return;
 
 	tokens += token.category;
 

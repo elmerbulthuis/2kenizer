@@ -3,12 +3,12 @@ var Tokenizer = require('2kenizer');
 
 var tokens = '';
 var tokenizer = new Tokenizer(function(token, buffer) {
-	if(!token) return;
+	if(!token.category) return;
 
 	switch(token.category)	{
 		case 'A':
 		if(token[0] == 'yz')	{
-			tokenizer.filter(['0']);
+			tokenizer.categories = ['0'];
 		}
 		break;
 		

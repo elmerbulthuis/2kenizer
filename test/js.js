@@ -4,7 +4,7 @@ var Tokenizer = require("2kenizer");
 
 function parse(data)	{
 	var tokenizer = new Tokenizer(function(token, buffer) {
-		if(!token) return;
+		if(!token.category) return;
 
 		//console.log(token.category, token[0]);
 
@@ -30,13 +30,13 @@ function parse(data)	{
 	var contextStack = [];
 	function enterContext(context)	{
 		currentContext = context;
-		tokenizer.filter(currentContext.filter);
+		tokenizer.categories = currentContext.filter;
 		contextStack.unshift(currentContext);
 	}
 	function exitContext()	{
 		contextStack.shift();
 		currentContext = contextStack[0];
-		tokenizer.filter(currentContext.filter);
+		tokenizer.categories = currentContext.filter;
 		assert.ok(contextStack.length > 0);
 	}
 

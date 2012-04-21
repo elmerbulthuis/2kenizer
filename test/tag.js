@@ -9,7 +9,7 @@ function parse(data)	{
 	var newline = "\n";
 	
 	var tokenizer = new Tokenizer(function(token, buffer) {
-		if(!token) return;
+		if(!token.category) return;
 
 		for(var index = buffer.indexOf(newline); ~index && index < token.index; index = buffer.indexOf(newline, index + newline.length))	{
 	line++;
@@ -30,7 +30,7 @@ function parse(data)	{
 	var contextStack = [];
 	function enterContext(context)	{
 		currentContext = context;
-		tokenizer.filter(currentContext.filter);
+		tokenizer.categories = currentContext.filter;
 		contextStack.unshift(currentContext);
 
 		//console.log(arguments.callee, currentContext.category);
@@ -38,7 +38,7 @@ function parse(data)	{
 	function exitContext()	{
 		contextStack.shift();
 		currentContext = contextStack[0];
-		tokenizer.filter(currentContext.filter);
+		tokenizer.categories = currentContext.filter;
 		assert.ok(contextStack.length > 0);
 
 		//console.log(arguments.callee, currentContext.category);
