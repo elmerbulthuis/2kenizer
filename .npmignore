@@ -1,0 +1,6 @@
+.*
+*~
+*.log
+test/
+node_modules/
+
