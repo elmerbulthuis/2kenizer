@@ -1,6 +1,7 @@
 var assert = require("assert");
 var fs = require('fs');
 var Tokenizer = require("2kenizer");
+var tools = require("../lib/tools");
 
 var voidTags = ['area', 'base', 'br', 'col', 'command', 'embed', 'hr', 'img', 'input', 'keygen', 'link', 'meta', 'param', 'source', 'track', 'wbr'];
 
@@ -85,36 +86,25 @@ function parse(data)	{
 }
 
 
-var doTests = process.argv.slice(2);
 
-function testDirectory(dirPath)	{
-	fs.readdirSync(dirPath).forEach(function(subPath) {
-		var filePath = dirPath + '/' + subPath;
-		var fileStat = fs.statSync(filePath);
-		if(fileStat.isDirectory()) testDirectory(filePath);
-		if(fileStat.isFile()) testFile(filePath);
-	});
-}
 
-function testFile(filePath, options)	{
-	var match = /((.*\/)?(.+))\.html$/i.exec(filePath);
-	if (!match) return;
 
-	if(doTests.length && !~doTests.indexOf(match[3]))	{
-		return;
-	}
+var root = '../../';
 
-	console.log('[' + match[3] + ']');
+tools
+.allFiles(root)
+.filter(function(file){
+	return /\.html$/.test(file); 
+})
+.forEach(function(file){
+	console.log('[' + file + ']');
 	try	{
-		parse(fs.readFileSync(match[0], 'utf-8'));
+		parse(fs.readFileSync(root + '/' + file, 'utf-8'));
 	}
 	catch(ex)	{
-		console.log('[' + match[1] + ']');
 		console.log(ex.toString());
 	}
-}
-
-testDirectory(__dirname + "/../..");
-
+})
+;
 
 
