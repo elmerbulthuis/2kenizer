@@ -74,6 +74,7 @@ module.exports = function(tokenCallback, expressionSet, options) {
 	*/
 	function write() {
 		flatten(toArray(arguments)).forEach(function(argument)	{
+			argument = argument ? argument.toString() : '';
 			while(argument.length > 0)	{
 				var chunk = argument.substring(0, options.bufferLimit);
 				argument = argument.substring(chunk.length);
