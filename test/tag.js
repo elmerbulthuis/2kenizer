@@ -2,10 +2,12 @@ var assert = require("assert");
 var fs = require('fs');
 var Tokenizer = require("2kenizer");
 var tools = require("../lib/tools");
+var async = require('async');
 
 var voidTags = ['area', 'base', 'br', 'col', 'command', 'embed', 'hr', 'img', 'input', 'keygen', 'link', 'meta', 'param', 'source', 'track', 'wbr'];
 
-function parse(data)	{
+function parse(path, cb)	{
+
 	var line = 0;
 	var newline = "\n";
 	
@@ -80,31 +82,34 @@ function parse(data)	{
 		, filter:	["tagComment", "tag"]
 	});
 
-	tokenizer.end.apply(tokenizer, arguments);
+	var stream = fs.createReadStream(path, {
+		encoding: 'utf8'
+	});
+	stream.pipe(tokenizer);
+	stream.on('close', function(){
+		cb();
+		assert.equal(contextStack.length, 1, contextStack.map(function(context) {return context.category}));
+		//stream.destroy();
+	});
 
-	assert.equal(contextStack.length, 1, contextStack.map(function(context) {return context.category}));
 }
 
 
 
 
 
-var root = '../../';
+var root = './';
 
+
+async.forEachSeries(
 tools
 .allFiles(root)
 .filter(function(file){
 	return /\.html$/.test(file); 
 })
-.forEach(function(file){
+, function(file, cb){
 	console.log('[' + file + ']');
-	try	{
-		parse(fs.readFileSync(root + '/' + file, 'utf-8'));
-	}
-	catch(ex)	{
-		console.log(ex.toString());
-	}
-})
+	parse(root + '/' + file, cb);
+});
 ;
-
 
