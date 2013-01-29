@@ -13,7 +13,7 @@
     
     , "main": "lib/2kenizer.js"
     , "scripts": {
-        "test": "mocha test/* --reporter spec"
+        "test": "mocha test/* --reporter spec --timeout 20000"
     }
 
     , "dependencies":	{
