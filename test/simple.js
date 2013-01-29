@@ -1,5 +1,5 @@
 var assert = require('assert');
-var Tokenizer = require('2kenizer');
+var Tokenizer = require("../lib/2kenizer");
 
 var tokens = '';
 var tokenizer = new Tokenizer(function(token, buffer) {

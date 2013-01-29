@@ -1,6 +1,6 @@
 var assert = require("assert");
 var fs = require('fs');
-var Tokenizer = require("2kenizer");
+var Tokenizer = require("../lib/2kenizer");
 var tools = require("../lib/tools");
 var async = require('async');
 
