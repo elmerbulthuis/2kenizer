@@ -1,29 +1,32 @@
 var assert = require('assert');
 var Tokenizer = require("../lib/2kenizer");
 
-var tokens = '';
-var tokenizer = new Tokenizer(function(token, buffer) {
-	if(!token.category) return;
+it('switching', function(){
+	var tokens = '';
+	var tokenizer = new Tokenizer(function(token, buffer) {
+		if(!token.category) return;
 
-	switch(token.category)	{
-		case 'A':
-		if(token[0] == 'yz')	{
-			tokenizer.categories = ['0'];
+		switch(token.category)	{
+			case 'A':
+			if(token[0] == 'yz')	{
+				tokenizer.categories = ['0'];
+			}
+			break;
+			
+			case '0':
+			break;
 		}
-		break;
-		
-		case '0':
-		break;
-	}
 
-	tokens += token.category;
-},	{
-	'A':	/[a-zA-Z]{2}/
-	, '0':	/[0-9]{2}/
+		tokens += token.category;
+	},	{
+		'A':	/[a-zA-Z]{2}/
+		, '0':	/[0-9]{2}/
+	});
+
+	tokenizer.write('abcdefghijklmnopqrstuvwxyz');
+	tokenizer.write('0123456789');
+	tokenizer.end('abcdefghijklmnopqrstuvwxyz0123456789');
+
+	assert.equal('AAAAAAAAAAAAA0000000000', tokens);
 });
 
-tokenizer.write('abcdefghijklmnopqrstuvwxyz');
-tokenizer.write('0123456789');
-tokenizer.end('abcdefghijklmnopqrstuvwxyz0123456789');
-
-assert.equal('AAAAAAAAAAAAA0000000000', tokens);
