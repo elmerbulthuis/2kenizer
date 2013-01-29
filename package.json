@@ -12,10 +12,15 @@
     ]
     
     , "main": "lib/2kenizer.js"
-    ,   "dependencies":	{
+    , "scripts": {
+        "test": "mocha test/* --reporter spec --timeout 20000"
+    }
+
+    , "dependencies":	{
 	}
-    ,   "devDependencies":	{
-        "async": "*"
+    , "devDependencies":	{
+        "mocha": "*"
+        , "async": "*"
 	}
 
 }

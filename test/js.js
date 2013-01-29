@@ -1,10 +1,39 @@
 var assert = require("assert");
+var path = require('path');
 var fs = require('fs');
 var Tokenizer = require("../lib/2kenizer");
 var tools = require("../lib/tools");
-var async = require('async');
+
+
+describe('js', directoryTest(path.normalize(__dirname + '/../.')));
+
+
+function directoryTest(rootPath){
+	return function(){
+		fs.readdirSync(rootPath).forEach(function(subPath) {
+			var filePath = path.join(rootPath, subPath);
+			var fileStat = fs.statSync(filePath);
+			var fileMatch = /^(.+)\.js$/.exec(filePath);
+
+			if(fileStat.isDirectory()) {
+				describe(subPath, directoryTest(filePath));
+			}
+			if(fileStat.isFile() && fileMatch) {
+				it(subPath, fileTest(fileMatch[0]));
+			}
+		});
+	}
+}
+
+function fileTest(filePath){
+	return function(cb){
+		parse(filePath, cb);
+	}
+}
+
 
 function parse(path, cb)	{
+	var currentContext;
 	var tokenizer = new Tokenizer(function(token, buffer) {
 		if(!token.category) return;
 
@@ -96,27 +125,11 @@ function parse(path, cb)	{
 	});
 	stream.pipe(tokenizer);
 	stream.on('close', function(){
-		cb();
 		assert.equal(contextStack.length, 1, contextStack.map(function(context) {return context.category}));
-		//stream.destroy();
+		stream.destroy();
+		cb();
 	});
 
 }
 
-
-
-var root = './';
-
-
-async.forEachSeries(
-tools
-.allFiles(root)
-.filter(function(file){
-	return /\.js$/.test(file); 
-})
-, function(file, cb){
-	console.log('[' + file + ']');
-	parse(root + '/' + file, cb);
-});
-;
 
