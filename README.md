@@ -1,5 +1,8 @@
 # 2kenizer
 
+Master: [![Build Status](https://travis-ci.org/elmerbulthuis/2kenizer.png?branch=master)](https://travis-ci.org/elmerbulthuis/2kenizer)
+Develop: [![Build Status](https://travis-ci.org/elmerbulthuis/2kenizer.png?branch=develop)](https://travis-ci.org/elmerbulthuis/2kenizer)
+
 Efficient tokenizer, used by the JsHtml view engine. 
 	
 
