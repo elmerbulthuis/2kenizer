@@ -125,9 +125,9 @@ function parse(path, cb)	{
 	});
 	stream.pipe(tokenizer);
 	stream.on('close', function(){
-		cb();
 		assert.equal(contextStack.length, 1, contextStack.map(function(context) {return context.category}));
-		//stream.destroySoon();
+		stream.destroy();
+		cb();
 	});
 
 }
