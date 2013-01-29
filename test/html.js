@@ -34,7 +34,7 @@ function fileTest(filePath){
 
 
 function parse(path, cb)	{
-
+	var currentContext;
 	var line = 0;
 	var newline = "\n";
 	

@@ -33,6 +33,7 @@ function fileTest(filePath){
 
 
 function parse(path, cb)	{
+	var currentContext;
 	var tokenizer = new Tokenizer(function(token, buffer) {
 		if(!token.category) return;
 
