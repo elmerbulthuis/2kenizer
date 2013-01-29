@@ -1,10 +1,37 @@
 var assert = require("assert");
+var path = require('path');
 var fs = require('fs');
 var Tokenizer = require("../lib/2kenizer");
 var tools = require("../lib/tools");
-var async = require('async');
 
 var voidTags = ['area', 'base', 'br', 'col', 'command', 'embed', 'hr', 'img', 'input', 'keygen', 'link', 'meta', 'param', 'source', 'track', 'wbr'];
+
+describe('html', directoryTest(path.normalize(__dirname + '/../.')));
+
+
+function directoryTest(rootPath){
+	return function(){
+		fs.readdirSync(rootPath).forEach(function(subPath) {
+			var filePath = path.join(rootPath, subPath);
+			var fileStat = fs.statSync(filePath);
+			var fileMatch = /^(.+)\.html$/.exec(filePath);
+
+			if(fileStat.isDirectory()) {
+				describe(subPath, directoryTest(filePath));
+			}
+			if(fileStat.isFile() && fileMatch) {
+				it(subPath, fileTest(fileMatch[0]));
+			}
+		});
+	}
+}
+
+function fileTest(filePath){
+	return function(cb){
+		parse(filePath, cb);
+	}
+}
+
 
 function parse(path, cb)	{
 
@@ -94,22 +121,4 @@ function parse(path, cb)	{
 
 }
 
-
-
-
-
-var root = './';
-
-
-async.forEachSeries(
-tools
-.allFiles(root)
-.filter(function(file){
-	return /\.html$/.test(file); 
-})
-, function(file, cb){
-	console.log('[' + file + ']');
-	parse(root + '/' + file, cb);
-});
-;
 
